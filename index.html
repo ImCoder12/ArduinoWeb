@@ -196,17 +196,24 @@
             justify-content: center;
             padding: 25px;
             position: relative;
+            overflow: hidden;
         }
         
         .product-image img {
             max-height: 100%;
             max-width: 100%;
             object-fit: contain;
-            transition: var(--transition);
+            transition: transform 0.5s ease, opacity 0.3s ease;
+            transform-origin: center center;
+            cursor: zoom-in;
         }
         
         .product-card:hover .product-image img {
-            transform: scale(1.05);
+            transform: scale(1.5);
+        }
+
+        .product-card:hover .product-image {
+            background-color: #e0e0e0;
         }
         
         .product-badge {
@@ -420,6 +427,27 @@
             
             .product-image {
                 height: 180px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-image.zoomed img {
+                transform: scale(2);
+                position: relative;
+                z-index: 100;
+            }
+            
+            .product-image.zoomed {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 99;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
     </style>
@@ -1013,7 +1041,7 @@
                         "Contact": "NO/NC"
                     }
                 },
-                isNew: true,
+                isNew: false,
                 discount: 0
             }
         ];
@@ -1220,6 +1248,41 @@
                 }
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth <= 768) {
+                const productImages = document.querySelectorAll('.product-image');
+                
+                productImages.forEach(image => {
+                    image.addEventListener('click', function() {
+                        this.classList.toggle('zoomed');
+                        
+                        // Добавляем кнопку закрытия
+                        if (this.classList.contains('zoomed')) {
+                            const closeBtn = document.createElement('button');
+                            closeBtn.innerHTML = '&times;';
+                            closeBtn.style.position = 'fixed';
+                            closeBtn.style.top = '20px';
+                            closeBtn.style.right = '20px';
+                            closeBtn.style.background = 'white';
+                            closeBtn.style.border = 'none';
+                            closeBtn.style.borderRadius = '50%';
+                            closeBtn.style.width = '40px';
+                            closeBtn.style.height = '40px';
+                            closeBtn.style.fontSize = '20px';
+                            closeBtn.style.zIndex = '101';
+                            closeBtn.style.cursor = 'pointer';
+                            closeBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                this.classList.remove('zoomed');
+                                document.body.removeChild(closeBtn);
+                            });
+                            document.body.appendChild(closeBtn);
+                        }
+                    });
+                });
+            }
+        });
     </script>
 </body>
 </html>
