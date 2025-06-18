@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Каталог</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00979D;
+            --primary-dark: #00777D;
+            --secondary: #FF7D00;
+            --secondary-dark: #E56D00;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #e0e0e0;
+            --dark-gray: #95a5a6;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-img {
+            height: 50px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transition: var(--transition);
+        }
+        
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .lang-switcher {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .lang-btn.active {
+            background: var(--white);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: var(--primary);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            border: 2px solid var(--gray);
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 151, 157, 0.2);
+        }
+        
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 3rem;
+        }
+        
+        .category-btn {
+            background: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .category-btn i {
+            font-size: 1.1rem;
+        }
+        
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-btn.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .product-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-image {
+            height: 220px;
+            background-color: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .product-image img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .product-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: var(--dark);
+            font-weight: 600;
+            flex-grow: 1;
+        }
+        
+        .product-price {
+            font-weight: 700;
+            color: var(--secondary-dark);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .product-link {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: var(--transition);
+            text-align: center;
+            font-weight: 500;
+            margin-top: auto;
+        }
+        
+        .product-link:hover {
+            background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .tech-specs {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+        
+        .spec-item {
+            display: flex;
+            margin-bottom: 5px;
+        }
+        
+        .spec-label {
+            font-weight: 500;
+            margin-right: 5px;
+        }
+        
+        .discount-tag {
+            position: absolute;
+            top: 40px;
+            left: 15px;
+            background: #27ae60;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 3rem;
+            background: var(--dark);
+            color: var(--white);
+            margin-top: 5rem;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .footer-link {
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-link:hover {
+            color: var(--secondary);
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        .theme-switcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: var(--transition);
+        }
+        
+        .theme-switcher:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode {
+            --light: #2c3e50;
+            --dark: #f8f9fa;
+            --gray: #34495e;
+            --dark-gray: #bdc3c7;
+            --white: #34495e;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 992px) {
+            .products {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+                padding: 1.5rem;
+            }
+            
+            .logo {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .categories {
+                gap: 8px;
+            }
+            
+            .category-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .products {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-image {
+                height: 180px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Arduino_Logo.svg/2560px-Arduino_Logo.svg.png" alt="Arduino Logo" class="logo-img">
+            <div class="logo-text" id="logo-text">Каталог Arduino</div>
+        </div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="ru">Русский</button>
+            <button class="lang-btn" data-lang="en">English</button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <h1 id="main-title">Продукция Arduino</h1>
+        
+        <div class="search-bar">
+            <input type="text" class="search-input" id="search-input" placeholder="Поиск товаров...">
+        </div>
+        
+        <div class="categories">
+            <button class="category-btn active" data-category="all">
+                <i class="fas fa-boxes"></i>
+                <span class="ru">Все товары</span>
+                <span class="en">All products</span>
+            </button>
+            <button class="category-btn" data-category="boards">
+                <i class="fas fa-microchip"></i>
+                <span class="ru">Платы</span>
+                <span class="en">Boards</span>
+            </button>
+            <button class="category-btn" data-category="kits">
+                <i class="fas fa-box-open"></i>
+                <span class="ru">Наборы</span>
+                <span class="en">Kits</span>
+            </button>
+            <button class="category-btn" data-category="shields">
+                <i class="fas fa-puzzle-piece"></i>
+                <span class="ru">Шилды</span>
+                <span class="en">Shields</span>
+            </button>
+            <button class="category-btn" data-category="sensors">
+                <i class="fas fa-thermometer-half"></i>
+                <span class="ru">Датчики</span>
+                <span class="en">Sensors</span>
+            </button>
+            <button class="category-btn" data-category="modules">
+                <i class="fas fa-cubes"></i>
+                <span class="ru">Модули</span>
+                <span class="en">Modules</span>
+            </button>
+            <button class="category-btn" data-category="accessories">
+                <i class="fas fa-tools"></i>
+                <span class="ru">Аксессуары</span>
+                <span class="en">Accessories</span>
+            </button>
+            <button class="category-btn" data-category="new">
+                <i class="fas fa-star"></i>
+                <span class="ru">Новинки</span>
+                <span class="en">New arrivals</span>
+            </button>
+        </div>
+        
+        <div class="products" id="products-container">
+            <!-- JavaScript -->
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#" class="footer-link ru">О нас</a>
+                <a href="#" class="footer-link en">About</a>
+                <a href="#" class="footer-link ru">Контакты</a>
+                <a href="#" class="footer-link en">Contacts</a>
+            </div>
+            <p class="copyright ru">© 2025 Каталог товаров Arduino. Все права защищены.</p>
+            <p class="copyright en">© 2025 Arduino Products Catalog. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <div class="theme-switcher" id="theme-switcher">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <script>
+        // Данные продуктов
+        const products = [
+            {
+                id: 1,
+                name: { ru: "Arduino Uno", en: "Arduino Uno" },
+                category: "boards",
+                price: "€4.80",
+                image: "assets/img/Arduino_UNO.png",
+                llink: "https://www.temu.com/cy-ru/1-%D1%88%D1%82--r3-328p-au-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D0%BB%D0%B5%D1%80-ch340g-%D1%83%D0%BB%D1%83%D1%87%D1%88%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F--%D0%BC%D0%B0%D0%BA%D0%B5%D1%82%D0%BD%D0%BE%D0%B9-%D0%BF%D0%BB%D0%B0%D1%82%D1%8B-%D1%81%D0%BE%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%B8%D0%BC%D0%B0%D1%8F-%D1%81--ide-%D1%81-usb-%D0%BA%D0%B0%D0%B1%D0%B5%D0%BB%D0%B5%D0%BC-%D0%B8-%D0%BF%D1%80%D1%8F%D0%BC%D1%8B%D0%BC-%D0%B4%D0%B5%D1%80%D0%B6%D0%B0%D1%82%D0%B5%D0%BB%D0%B5%D0%BC-%D1%88%D1%82%D0%B8%D1%84%D1%82%D0%B0-2-54-%D0%BC%D0%BC-g-601099545720916.html?_oak_mp_inf=ENTwlqem1ogBGiAxMzg5MWNhMWZlNjc0NWQyOGZmMzIwZDdiZGEwY2QwNCDK74KU%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Ffancy%2F90841808-7cfb-4631-b770-cd64a0f3e0ea.jpg&spec_gallery_id=4104865633&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=NDQ0&_oak_gallery_order=1043331167%2C1613366484%2C1332392972%2C1056948240%2C1823136670&search_key=Arduino&refer_page_el_sn=200049&_x_sessn_id=kfzjqqh5y6&refer_page_name=search_result&refer_page_id=10009_1750241162991_nxd1lfshgv",
+                specs: {
+                    ru: {
+                        "Процессор": "ATmega328P",
+                        "Память": "32KB Flash, 2KB SRAM",
+                        "Порты": "14 цифровых, 6 аналоговых"
+                    },
+                    en: {
+                        "Processor": "ATmega328P",
+                        "Memory": "32KB Flash, 2KB SRAM",
+                        "Ports": "14 digital, 6 analog"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 2,
+                name: { ru: "Arduino Nano", en: "Arduino Nano" },
+                category: "boards",
+                price: "€4.24",
+                image: "assets/img/NANO.png",
+                link: "https://www.temu.com/cy-ru/нано-v3-0-ch340g-улучшенная-плата--совместима-с-официальной-версией-микроконтроллер-328p-au-usb-и-внешнее-питание-12-цифровых-портов-8-аналоговых-входов-ttl-серийные-порты--для-diy-проектов-и-интерактивных-работ-g-601100055838623.html?_oak_mp_inf=EJ%2F%2FtZqo1ogBGiAxMzg5MWNhMWZlNjc0NWQyOGZmMzIwZDdiZGEwY2QwNCDL74KU%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Ffancy%2F7b2dabc8-b424-4b2a-b8cf-f09baf154b59.jpg&spec_gallery_id=6008601739&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=Mzc1&_oak_gallery_order=317009330%2C2042960374%2C95741855%2C472842532%2C612185761&search_key=Arduino&refer_page_el_sn=200049&_x_sessn_id=kfzjqqh5y6&refer_page_name=search_result&refer_page_id=10009_1750241162991_nxd1lfshgv",
+                specs: {
+                    ru: {
+                        "Процессор": "ATmega328",
+                        "Память": "32KB Flash, 2KB SRAM",
+                        "Размеры": "18 × 45mm"
+                    },
+                    en: {
+                        "Processor": "ATmega328",
+                        "Memory": "32KB Flash, 2KB SRAM",
+                        "Dimensions": "18 × 45mm"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 3,
+                name: { ru: "Arduino Mega2560 CH340", en: "Arduino Mega2560 CH340" },
+                category: "boards",
+                price: "€17.79",
+                image: "assets/img/MEGA.png",
+                link: "https://www.temu.com/cy-ru/-%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D0%BB%D0%B5%D1%80%D0%B0---%D0%B4%D0%BB%D1%8F-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8-%D1%83%D0%BB%D1%83%D1%87%D1%88%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-%D0%B0%D0%BB%D1%8E%D0%BC%D0%B8%D0%BD%D0%B8%D0%B5%D0%B2%D1%8B%D0%B9-%D0%B8%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82-%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E-%D1%82%D0%B8%D0%BF-%D0%BD%D0%B0-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%BA%D1%83-%D0%B1%D0%B0%D1%82%D0%B0%D1%80%D0%B5%D1%8F-%D0%BD%D0%B5-%D1%82%D1%80%D0%B5%D0%B1%D1%83%D0%B5%D1%82%D1%81%D1%8F-%D1%81%D0%BE%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%B8%D0%BC-%D1%81--ide-%D0%B4%D0%BB%D1%8F-%D1%8D%D1%81%D0%BA%D0%B8%D0%B7%D0%BE%D0%B2-%D0%B8-%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B9-g-601100313810951.html?_oak_mp_inf=EIewt5Wp1ogBGiA5ZmMwOWFkZGU3Yzc0ZTc4ODViZGExMmY2MzY1OWRkZCD675OU%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Ffancy%2F8366672b-4d8b-4bd2-ad68-9533995e0648.jpg&spec_gallery_id=7004865494&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=MTc3OQ&_oak_gallery_order=87443560%2C1719141251%2C1901588614%2C1081193323%2C9800426&search_key=Arduino%20mega&refer_page_el_sn=200049&refer_page_name=search_result&refer_page_id=10009_1750241162991_nxd1lfshgv&_x_sessn_id=kfzjqqh5y6",
+                specs: {
+                    ru: {
+                        "Процессор": "ATmega2560",
+                        "Память": "256KB Flash, 8KB SRAM",
+                        "Порты": "54 цифровых, 16 аналоговых"
+                    },
+                    en: {
+                        "Processor": "ATmega2560",
+                        "Memory": "256KB Flash, 8KB SRAM",
+                        "Ports": "54 digital, 16 analog"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 4,
+                name: { ru: "ESP32 DevKitC, CP2102", en: "ESP32 DevKitC, CP2102" },
+                category: "boards",
+                price: "€6.35",
+                image: "assets/img/ESP32.png",
+                link: "https://www.temu.com/cy-ru/1-esp32-sensor-module-development-board-esp32---with-micro-port-no-battery-power-supply-mode-suitable-for-beginners-to-learn-circuits-g-601101324231042.html?_oak_mp_inf=EILDnves1ogBGiBlZjNlNjM1MTZiZmI0YzBjOTMzN2FhMzE3MjdiOGVmMiCd8aiU%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Fopen%2F6367519cc8f04565ace6b457e7ca94b4-goods.jpeg&spec_gallery_id=10313882446&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=NjM1&_oak_gallery_order=1506516826%2C1583255214%2C10668070%2C1077241499%2C1024499282&search_key=ARDUINO%20LEONARDO&refer_page_el_sn=200049&_x_sessn_id=kfzjqqh5y6&refer_page_name=search_result&refer_page_id=10009_1750241785804_le9ycukscl",
+                specs: {
+                    ru: {
+                        "ОЗУ": "до 520 КБ",
+                        "ПЗУ": "448 КБ",
+                        "Wi-Fi": "Частота: 2.4 ГГц"
+                    },
+                    en: {
+                        "SRAM": "up to 520 KB",
+                        "ROM": "448 KB",
+                        "Wi-Fi": "Frequency: 2.4 GHz"
+                    }
+                }
+            },
+            {
+                id: 5,
+                name: { ru: "Кит Сенсоров", en: "The Sensor Kit" },
+                category: "kits",
+                price: "€27.02",
+                image: "assets/img/kit1.png",
+                link: "https://www.temu.com/cy-ru/%D0%BD%D0%B0%D1%87%D0%B8%D0%BD%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BB%D0%B5%D0%BA%D1%82-%D1%81%D0%B5%D0%BD%D1%81%D0%BE%D1%80%D0%BD%D1%8B%D1%85-%D0%BC%D0%BE%D0%B4%D1%83%D0%BB%D0%B5%D0%B9-45-%D0%B2-1-%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B0%D1%8E%D1%89%D0%B8%D0%B9-16-%D1%82%D0%B8%D0%BF%D0%BE%D0%B2-%D0%B4%D0%BB%D1%8F--%D0%B8--%D0%BF%D1%80%D0%B5%D0%B2%D0%BE%D1%81%D1%85%D0%BE%D0%B4%D1%8F%D1%89%D0%B8%D0%B9-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BB%D0%B5%D0%BA%D1%82-37-%D0%B2-1-%D1%81-%D0%BA%D0%BE%D1%80%D0%BE%D0%B1%D0%BA%D0%BE%D0%B9-%D0%B4%D0%BB%D1%8F-diy--set-r3--g-601100168785062.html?_oak_mp_inf=EKbZo9Co1ogBGiBjMGYzNmU2OGQxNmY0NGQ0OGQ4NWU4ZWIxZmQyYWVkZCDZlIOW%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Ffancy%2Fceb3289c-bf35-4f08-a1c6-ef31f18a51a7.jpg&spec_gallery_id=6435183136&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=MjcwMg&_oak_gallery_order=1613467239%2C2034089917%2C866052756%2C1815472059%2C1944405875&search_key=%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D1%8B%20Arduino&refer_page_el_sn=200049&refer_page_name=search_result&refer_page_id=10009_1750244748808_py61lkz6aw&_x_sessn_id=kfzjqqh5y6",
+                specs: {
+                    ru: {
+                        "Компонетов": "45 в 1",
+                        "Датчики из": "Китая",
+                        "Набор": "большой"
+                    },
+                    en: {
+                        "Components": "45 в 1",
+                        "Sensors from": "China",
+                        "Set": "large"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 6,
+                name: { ru: "LAFVIN Базовый стартовый набор", en: "LANVIN Basic Starter Kit" },
+                category: "kits",
+                price: "€15.49",
+                image: "assets/img/kit2.png",
+                link: "https://www.temu.com/cy-ru/%D0%BD%D0%B0%D0%B1%D0%BE%D1%80-%D0%B4%D0%BB%D1%8F-%D0%BD%D0%B0%D1%87%D0%B8%D0%BD%D0%B0%D1%8E%D1%89%D0%B8%D1%85---r3-%D1%81-%D0%BF%D0%BB%D0%B0%D1%82%D0%BE%D0%B9-r3-%D1%80%D0%B5%D0%B6%D0%B8%D0%BC%D0%BE%D0%BC-usb-power-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D0%BE%D0%BC-%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D1%8B%D1%85-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%BE%D0%B2-%D0%B4%D0%BB%D1%8F-%D1%81%D0%B0%D0%BC%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B9-%D1%81%D0%B1%D0%BE%D1%80%D0%BA%D0%B8-%D0%BF%D0%BB%D0%B0%D1%81%D1%82%D0%B8%D0%BA%D0%BE%D0%B2%D1%8B%D0%BC-%D0%BA%D0%BE%D1%80%D0%BF%D1%83%D1%81%D0%BE%D0%BC-%D1%80%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%BC-%D0%BD%D0%B0%D0%BF%D1%80%D1%8F%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5%D0%BC-36v-%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B0%D1%8F-%D1%83%D1%87%D0%B5%D0%B1%D0%BD%D0%BE%D0%B5-%D0%BF%D0%BE%D1%81%D0%BE%D0%B1%D0%B8%D0%B5-%D0%BD%D0%B5-%D1%82%D1%80%D0%B5%D0%B1%D1%83%D0%B5%D1%82-%D0%B1%D0%B0%D1%82%D0%B0%D1%80%D0%B5%D0%B5%D0%BA--%D0%BF%D0%BE%D0%B4%D1%85%D0%BE%D0%B4%D0%B8%D1%82-%D0%B4%D0%BB%D1%8F-%D0%BD%D0%B0%D1%87%D0%B8%D0%BD%D0%B0%D1%8E%D1%89%D0%B8%D1%85-%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%BE%D0%B2-g-601099580811876.html?_oak_mp_inf=EOTU9Lem1ogBGiBjMGYzNmU2OGQxNmY0NGQ0OGQ4NWU4ZWIxZmQyYWVkZCDblIOW%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Ffancy%2Fa354c846-f2f4-4454-91a0-2872b797f219.jpg&spec_gallery_id=4171192881&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=MTU0OQ&_oak_gallery_order=2076866646%2C867664663%2C656562266%2C422579445%2C418072808&search_key=%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D1%8B%20Arduino&refer_page_el_sn=200049&refer_page_name=search_result&refer_page_id=10009_1750244748808_py61lkz6aw&_x_sessn_id=kfzjqqh5y6",
+                specs: {
+                    ru: {
+                        "Плата": "UNO",
+                        "Шнуры": "jumper",
+                        "Набор": "простой"
+                    },
+                    en: {
+                        "Board": "UNO",
+                        "Cords": "jumper",
+                        "Set": "simple"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 7,
+                name: { ru: "Начальный комплект", en: "The initial set" },
+                category: "kits",
+                price: "€42.83",
+                image: "assets/img/kit3.png",
+                link: "https://www.temu.com/cy-ru/%D0%BD%D0%B0%D1%87%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BB%D0%B5%D0%BA%D1%82-%D0%B4%D0%BB%D1%8F-%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%B8%D0%BA%D0%B8--r3-%D1%81%D0%BE%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%B8%D0%BC%D1%8B%D0%B9-%D1%81--ide-%D0%B4%D0%BB%D1%8F-%D0%BD%D0%B0%D1%87%D0%B8%D0%BD%D0%B0%D1%8E%D1%89%D0%B8%D1%85-g-601101329785903.html?_oak_mp_inf=EK%2FI8fms1ogBGiBjZDJjZjMyMjgwYjk0MTFlYWYwZjkxYzYyMDVmMGRiZSDvvKWW%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Ffancy%2F849c5813-48e9-43c3-b72c-77773416830c.jpg&spec_gallery_id=10302211843&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=NDI4Mw&_oak_gallery_order=1743460741%2C1073493575%2C1636750952%2C2032511505%2C2146576085&search_key=IoT%20Kit%20Arduino&refer_page_el_sn=200049&refer_page_name=search_result&refer_page_id=10009_1750244748808_py61lkz6aw&_x_sessn_id=kfzjqqh5y6",
+                specs: {
+                    ru: {
+                        "Плата": "UNO",
+                        "Бренд": "ieGeek",
+                        "Набор": "большой"
+                    },
+                    en: {
+                        "Board": "UNO",
+                        "Brand": "ieGeek",
+                        "Set": "large"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 8,
+                name: { ru: "Плата расширения сети Ethernet", en: "Ethernet Shield" },
+                category: "shields",
+                price: "€12.33",
+                image: "assets/img/Shield.png",
+                link: "https://www.temu.com/cy-ru/%D1%80%D0%B0%D0%B7%D1%88%D0%B8%D1%80%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%B0%D1%8F-%D0%BF%D0%BB%D0%B0%D1%82%D0%B0-ethernet-w5100-%D1%81-%D1%81%D0%BB%D0%BE%D1%82%D0%BE%D0%BC-%D0%B4%D0%BB%D1%8F-sd-%D0%BA%D0%B0%D1%80%D1%82%D1%8B-%D1%81%D0%BE%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%B8%D0%BC%D0%B0-%D1%81--mega--%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB-%D0%BF%D1%80%D0%BE%D0%BC%D1%8B%D1%88%D0%BB%D0%B5%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B0-abs-g-601099633902573.html?_oak_mp_inf=EO2HndGm1ogBGiAyODY0NWRkOTJhNTA0Yjc5OGYzMGY4ZjA5NmZkMzVmNSCy2L6U%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Ffancy%2F85af5435-0627-492a-a36e-09bad663cee1.jpg&spec_gallery_id=4394849947&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=MTIzMw&_oak_gallery_order=1270490299%2C1164420551%2C761023624%2C1521882523%2C479632652&search_key=ethernet%20shield%20arduino&refer_page_el_sn=200049&refer_page_name=search_result&refer_page_id=10009_1750241162991_nxd1lfshgv&_x_sessn_id=kfzjqqh5y6",
+                specs: {
+                    ru: {
+                        "Скорость": "10/100 Мбит",
+                        "Интерфейс": "RJ45",
+                        "Совместимость": "Uno, Mega"
+                    },
+                    en: {
+                        "Speed": "10/100 Mbps",
+                        "Interface": "RJ45",
+                        "Compatibility": "Uno, Mega"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 9,
+                name: { ru: "Шилд Motor", en: "Motor Shield" },
+                category: "shields",
+                price: "€29,45",
+                image: "assets/img/shieldMOTOR.png",
+                link: "https://store.arduino.cc/products/arduino-motor-shield-rev3",
+                specs: {
+                    ru: {
+                        "Двигатели": "2 DC или 1 шаговый",
+                        "Ток": "2A на канал",
+                        "Напряжение": "5-12V"
+                    },
+                    en: {
+                        "Motors": "2 DC or 1 stepper",
+                        "Current": "2A per channel",
+                        "Voltage": "5-12V"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 10,
+                name: { ru: "Датчик температуры", en: "Temperature Sensor" },
+                category: "sensors",
+                price: "€1.57",
+                image: "assets/img/TEMPR.png",
+                link: "https://www.temu.com/cy-ru/1-%D1%88%D1%82--%D0%B4%D0%B0%D1%82%D1%87%D0%B8%D0%BA%D0%B0-%D1%82%D0%B5%D0%BC%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D1%8B-%D0%B8-%D0%B2%D0%BB%D0%B0%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D0%B8--ky-015-%D1%81--%D0%BA%D0%B0%D0%B1%D0%B5%D0%BB%D1%8F%D0%BC%D0%B8-%D1%88%D0%B8%D1%80%D0%BE%D0%BA%D0%B8%D0%B9-%D0%B4%D0%B8%D0%B0%D0%BF%D0%B0%D0%B7%D0%BE%D0%BD-%D0%BD%D0%B0%D0%BF%D1%80%D1%8F%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F-36v-%D0%BA%D0%BE%D0%BC%D0%BF%D0%B0%D0%BA%D1%82%D0%BD%D1%8B%D0%B9--%D0%B4%D0%BB%D1%8F-%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D0%BA%D0%B8-%D0%B2-%D0%BF%D0%BE%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F%D1%85-%D0%BF%D0%BE%D0%B3%D0%BE%D0%B4%D0%BE%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BE%D0%BA-%D0%BF%D1%80%D0%BE%D0%BC%D1%8B%D1%88%D0%BB%D0%B5%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-%D0%BB%D0%B5%D0%B3%D0%BA%D0%BE%D0%B5-%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BD%D0%B0%D0%B4%D0%B5%D0%B6%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D1%8B-%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D0%B0-%D0%B4%D0%BB%D1%8F-%D0%BB%D1%8E%D0%B1%D0%B8%D1%82%D0%B5%D0%BB%D0%B5%D0%B9-%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%B8%D0%BA%D0%B8-g-601100949193433.html?_oak_mp_inf=ENmFtMSr1ogBGiBmODVjYWZjMzA3Y2I0ZDUyOWQ3YWRlMjc0NTRkYjZiNiDKtMSU%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Ffancy%2Ffc79c600-8a65-4e70-86a3-b39e9a648d87.jpg&spec_gallery_id=9103203400&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=MTU3&_oak_gallery_order=804249153%2C1608782921%2C612643941%2C627218285%2C580561685&search_key=%D0%94%D0%B0%D1%82%D1%87%D0%B8%D0%BA%20%D1%82%D0%B5%D0%BC%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D1%8B%20arduino&refer_page_el_sn=200049&refer_page_name=search_result&refer_page_id=10009_1750241162991_nxd1lfshgv&_x_sessn_id=kfzjqqh5y6",
+                specs: {
+                    ru: {
+                        "Диапазон": "-40°C до +125°C",
+                        "Точность": "±2°C",
+                        "Выход": "Аналоговый"
+                    },
+                    en: {
+                        "Range": "-40°C to +125°C",
+                        "Accuracy": "±2°C",
+                        "Output": "Analog"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 11,
+                name: { ru: "Датчик движения HC-SR501 PIR", en: "HC-SR501 PIR Motion Sensor" },
+                category: "sensors",
+                price: "€2.36",
+                image: "assets/img/PIR.png",
+                link: "https://www.temu.com/cy-ru/hc-sr501-pir-motion-sensor-with-acrylic-stand-uncharged-copper-material-no-battery-required-laser-free-compatible-with---esp32--for-diy-projects-g-601099695126567.html?_oak_mp_inf=EKfwte6m1ogBGiA2ODU0OTU5YmU3MjE0Y2FhYjZjYmJmMTZmOTRkNjZlYyC7p86U%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Fopen%2F2024-10-02%2F1727855181031-bf8dbb6126e94c3e8e1d5aec6d5b43f2-goods.jpeg&spec_gallery_id=601099695126567&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=MjM2&_oak_gallery_order=894387184%2C1702728321%2C1692031137%2C2102838748%2C1479403326&search_key=%D0%94%D0%B0%D1%82%D1%87%D0%B8%D0%BA%20%D0%B4%D0%B2%D0%B8%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F%20arduino&refer_page_el_sn=200049&refer_page_name=search_result&refer_page_id=10009_1750241162991_nxd1lfshgv&_x_sessn_id=kfzjqqh5y6",
+                specs: {
+                    ru: {
+                        "Дальность": "до 6 метров",
+                        "Угол": "110°",
+                        "Выход": "Цифровой"
+                    },
+                    en: {
+                        "Range": "up to 6m",
+                        "Angle": "110°",
+                        "Output": "Digital"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 12,
+                name: { ru: "Датчик влажности", en: "Humidity Sensor" },
+                category: "sensors",
+                price: "€1.39",
+                image: "assets/img/HUM.png",
+                link: "https://www.temu.com/cy-ru/-%D0%B2%D1%8B%D1%81%D0%BE%D0%BA%D0%BE%D1%82%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE-%D1%86%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE-%D0%B4%D0%B0%D1%82%D1%87%D0%B8%D0%BA%D0%B0-%D1%82%D0%B5%D0%BC%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D1%8B-%D0%B8-%D0%B2%D0%BB%D0%B0%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D0%B8-aht10-%D1%81-i2c-%D0%BA%D0%BE%D0%BC%D0%BC%D1%83%D0%BD%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%B5%D0%B9-%D0%BF%D0%B0%D0%B9%D0%BA%D0%BE%D0%B9-%D0%BD%D0%B0-%D0%BF%D0%B5%D1%87%D0%B0%D1%82%D0%BD%D0%BE%D0%B9-%D0%BF%D0%BB%D0%B0%D1%82%D0%B5-%D0%B1%D0%B5%D0%B7-%D0%B7%D0%B0%D1%80%D1%8F%D0%B4%D0%BA%D0%B8-%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D0%BD%D1%8B%D0%BC-%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D0%BE%D0%BC-%D0%B8%D0%B7-%D0%BC%D0%B5%D0%B4%D0%BD%D0%BE%D0%B9-%D1%81%D0%BF%D0%BB%D0%B0%D0%B2%D0%BD%D0%BE%D0%B9-%D0%B4%D0%BB%D1%8F-%D1%82%D0%BE%D1%87%D0%BD%D0%BE%D0%B3%D0%BE-%D0%BC%D0%BE%D0%BD%D0%B8%D1%82%D0%BE%D1%80%D0%B8%D0%BD%D0%B3%D0%B0-%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B5%D0%BD%D0%BD%D0%B5%D0%B9-%D0%B2%D0%BD%D0%B5%D1%88%D0%BD%D0%B5%D0%B9-%D1%81%D1%80%D0%B5%D0%B4%D1%8B-%D0%B4%D0%B0%D1%82%D1%87%D0%B8%D0%BA-%D1%82%D0%B5%D0%BC%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D1%8B-%D0%B8-%D0%B2%D0%BB%D0%B0%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D0%B8-%D0%BA%D0%BE%D0%BC%D0%BF%D0%B0%D0%BA%D1%82%D0%BD%D1%8B%D0%B9--%D0%BF%D1%80%D0%BE%D1%87%D0%BD%D0%B0%D1%8F-%D1%8D%D0%BB%D0%B5%D0%BA%D1%82%D1%80%D0%BE%D0%BD%D0%B8%D0%BA%D0%B0-g-601101034137772.html?_oak_mp_inf=EKzR9Oyr1ogBGiA1OTRhMjJhOTI3OTM0ZDdkYWQ2YmJhOTIyY2FiYzk0MyDW%2FM2W%2BDI%3D&top_gallery_url=https%3A%2F%2Fimg.kwcdn.com%2Fproduct%2Ffancy%2Fb650f459-ebce-4afa-bfeb-ca903578ed37.jpg&spec_gallery_id=9892649313&refer_page_sn=10009&refer_source=0&freesia_scene=2&_oak_freesia_scene=2&_oak_rec_ext_1=MTM5&_oak_gallery_order=1951251860%2C230380471%2C1850322684%2C1102140282%2C669275729&search_key=%D0%94%D0%B0%D1%82%D1%87%D0%B8%D0%BA%20%D0%B2%D0%BB%D0%B0%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D0%B8%20Arduino&refer_page_el_sn=200049&refer_page_name=search_result&refer_page_id=10009_1750246166209_0sk01qhveg&_x_sessn_id=kfzjqqh5y6",
+                specs: {
+                    ru: {
+                        "Диапазон": "20-90% RH",
+                        "Точность": "±5%",
+                        "Выход": "Аналоговый"
+                    },
+                    en: {
+                        "Range": "20-90% RH",
+                        "Accuracy": "±5%",
+                        "Output": "Analog"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            }
+        ];
+        
+        // Инициализация каталога
+        document.addEventListener('DOMContentLoaded', function() {
+            // Скрываем английские элементы при загрузке
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            renderProducts('all');
+            setupLanguageSwitcher();
+            setupCategoryButtons();
+            setupSearch();
+            setupThemeSwitcher();
+        });
+        
+        // Рендер продуктов
+        function renderProducts(category, searchQuery = '') {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            let filteredProducts = products;
+            
+            // Фильтрация по категории
+            if (category !== 'all') {
+                if (category === 'new') {
+                    filteredProducts = products.filter(p => p.isNew);
+                } else {
+                    filteredProducts = products.filter(p => p.category === category);
+                }
+            }
+            
+            // Фильтрация по поисковому запросу
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                const currentLang = document.querySelector('.lang-btn.active').dataset.lang;
+                
+                filteredProducts = filteredProducts.filter(product => {
+                    return product.name[currentLang].toLowerCase().includes(query) || 
+                           (product.specs && Object.values(product.specs[currentLang]).join(' ').toLowerCase().includes(query));
+                });
+            }
+            
+            if (filteredProducts.length === 0) {
+                container.innerHTML = `
+                    <div class="no-products" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; color: var(--dark-gray); margin-bottom: 20px;"></i>
+                        <h3 class="ru">Товары не найдены</h3>
+                        <h3 class="en">No products found</h3>
+                        <p class="ru" style="margin-top: 10px; color: var(--dark-gray);">Попробуйте изменить параметры поиска</p>
+                        <p class="en" style="margin-top: 10px; color: var(--dark-gray);">Try changing search parameters</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const currentLang = document.querySelector('.lang-btn.active').dataset.lang;
+            
+            filteredProducts.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                // Форматирование цены со скидкой
+                let priceDisplay = product.price;
+                if (product.discount > 0) {
+                    const originalPrice = parseFloat(product.price.replace('€', ''));
+                    const discountedPrice = originalPrice * (100 - product.discount) / 100;
+                    priceDisplay = `
+                        <span style="text-decoration: line-through; color: var(--dark-gray); margin-right: 8px;">${product.price}</span>
+                        <span style="color: #e74c3c;">$${discountedPrice.toFixed(2)}</span>
+                    `;
+                }
+                
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name.ru}">
+                        <div class="product-badge">${getCategoryName(product.category, currentLang)}</div>
+                        ${product.isNew ? '<div class="new-badge">NEW</div>' : ''}
+                        ${product.discount > 0 ? `<div class="discount-tag">-${product.discount}%</div>` : ''}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.name[currentLang]}</h3>
+                        <div class="product-price">${priceDisplay}</div>
+                        
+                        <div class="tech-specs">
+                            ${Object.entries(product.specs[currentLang]).map(([key, value]) => `
+                                <div class="spec-item">
+                                    <span class="spec-label">${key}:</span>
+                                    <span>${value}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <a href="${product.link}" class="product-link ru" target="_blank">Подробнее</a>
+                        <a href="${product.link}" class="product-link en" style="display:none" target="_blank">Details</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+        
+        // Получение названия категории на нужном языке
+        function getCategoryName(category, lang) {
+            const categories = {
+                boards: { ru: "Плата", en: "Board" },
+                kits: { ru: "Набор", en: "Kit" },
+                shields: { ru: "Шилд", en: "Shield" },
+                sensors: { ru: "Датчик", en: "Sensor" },
+                modules: { ru: "Модуль", en: "Module" },
+                accessories: { ru: "Аксессуар", en: "Accessory" },
+                new: { ru: "Новинка", en: "New" }
+            };
+            return categories[category][lang];
+        }
+        
+        // Переключение языка
+        function setupLanguageSwitcher() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Удаляем активный класс у всех кнопок
+                    langButtons.forEach(b => b.classList.remove('active'));
+                    // Добавляем активный класс текущей кнопке
+                    this.classList.add('active');
+                    
+                    const lang = this.dataset.lang;
+                    
+                    // Обновляем логотип и заголовок
+                    document.getElementById('logo-text').textContent = lang === 'ru' ? 'Каталог Arduino' : 'Arduino Catalog';
+                    document.getElementById('main-title').textContent = lang === 'ru' ? 'Продукция Arduino' : 'Arduino Products';
+                    
+                    // Обновляем placeholder поиска
+                    document.getElementById('search-input').placeholder = lang === 'ru' ? 'Поиск товаров...' : 'Search products...';
+                    
+                    // Переключаем видимость элементов по языку
+                    document.querySelectorAll('.ru, .en').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    document.querySelectorAll(`.${lang}`).forEach(el => {
+                        el.style.display = el.classList.contains('footer-link') ? 'inline' : 'block';
+                    });
+                    
+                    // Перерисовываем продукты с учетом текущего языка
+                    const activeCategory = document.querySelector('.category-btn.active').dataset.category;
+                    const searchQuery = document.getElementById('search-input').value;
+                    renderProducts(activeCategory, searchQuery);
+                });
+            });
+        }
+        
+        // Фильтрация по категориям
+        function setupCategoryButtons() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            
+            categoryButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Удаляем активный класс у всех кнопок
+                    categoryButtons.forEach(b => b.classList.remove('active'));
+                    // Добавляем активный класс текущей кнопке
+                    this.classList.add('active');
+                    
+                    const category = this.dataset.category;
+                    const searchQuery = document.getElementById('search-input').value;
+                    renderProducts(category, searchQuery);
+                });
+            });
+        }
+        
+        // Поиск товаров
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
+            
+            searchInput.addEventListener('input', function() {
+                const query = this.value;
+                const activeCategory = document.querySelector('.category-btn.active').dataset.category;
+                renderProducts(activeCategory, query);
+            });
+        }
+        
+        // Переключение темы
+        function setupThemeSwitcher() {
+            const themeSwitcher = document.getElementById('theme-switcher');
+            const body = document.body;
+            
+            // Проверяем сохраненную тему
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                themeSwitcher.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            
+            themeSwitcher.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    this.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    this.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
