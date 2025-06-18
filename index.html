@@ -450,6 +450,40 @@
                 justify-content: center;
             }
         }
+
+        .main-nav {
+            display: flex;
+            gap: 15px;
+            margin-left: 30px;
+            }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-link.active {
+            background: white;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                margin-left: 0;
+                margin-top: 15px;
+            }
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -527,6 +561,8 @@
                 <a href="#" class="footer-link en">About</a>
                 <a href="#" class="footer-link ru">Контакты</a>
                 <a href="#" class="footer-link en">Contacts</a>
+                <a href="guids.html" class="footer-link ru">Гайды</a>
+                <a href="guids.html" class="footer-link en">Guides</a>
             </div>
             <p class="copyright ru">© 2025 Каталог товаров Arduino. Все права защищены.</p>
             <p class="copyright en">© 2025 Arduino Products Catalog. All rights reserved.</p>
@@ -1039,6 +1075,26 @@
                         "Activation angle": "15°",
                         "Lifespan": "100,000 cycles",
                         "Contact": "NO/NC"
+                    }
+                },
+                isNew: false,
+                discount: 0
+            },
+            {
+                id: 28,
+                name: { ru: "Карта памяти MicroDrive", en: "MicroDrive Memory Card" },
+                category: "sensors",
+                price: "€2.53 - €18.52",
+                image: "assets/img/cart.png",
+                link: "https://www.temu.com/goods.html?_bg_fs=1&goods_id=601099671117169&sku_id=17592798372850&_oak_page_source=501&refer_page_name=goods&refer_page_id=10032_1750267029493_10taueac5y&refer_page_sn=10032&_x_sessn_id=7kt4p9nbxu",
+                specs: {
+                    ru: {
+                        "Карты": "microSD",
+                        "От": "8GB - 256GB"
+                    },
+                    en: {
+                        "Cart": "microSD",
+                        "For": "8GB - 256GB"
                     }
                 },
                 isNew: false,
