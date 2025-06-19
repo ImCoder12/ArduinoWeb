@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Arduino код с подсветкой</title>
+
+  <!-- Highlight.js стиль VSCode -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: white;
+      font-family: Consolas, monospace;
+      padding: 40px;
+    }
+
+    .code-wrapper {
+      position: relative;
+      display: flex;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px #0006;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .line-numbers {
+      text-align: right;
+      user-select: none;
+      padding: 10px;
+      color: #888;
+      background-color: #252526;
+      border-right: 1px solid #444;
+    }
+
+    .line-numbers span {
+      display: block;
+      height: 20px;
+    }
+
+    pre {
+      margin: 0;
+      padding: 10px;
+      overflow-x: auto;
+      background-color: #1e1e1e;
+      flex-grow: 1;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s ease;
+    }
+
+    .copy-button:hover {
+      background-color: #005f99;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Пример кода Arduino</h2>
+
+<div class="code-wrapper">
+  <div class="line-numbers" id="lineNumbers"></div>
+  <pre><code class="language-cpp" id="codeBlock">
+// Подключаем библиотеки
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+#define ONE_WIRE_BUS 2
+
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+void setup() {
+  Serial.begin(9600);
+  sensors.begin();
+  Serial.println("Датчик инициализирован");
+}
+
+void loop() {
+  sensors.requestTemperatures();
+  float tempC = sensors.getTempCByIndex(0);
+  Serial.print("Температура: ");
+  Serial.print(tempC);
+  Serial.println(" °C");
+  delay(1000);
+}
+</code></pre>
+  <button class="copy-button" onclick="copyCode()">Скопировать</button>
+</div>
+
+<!-- Highlight.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+<!-- Генерация номеров строк -->
+<script>
+  const codeText = document.getElementById('codeBlock').innerText;
+  const lines = codeText.split('\n').length;
+  const lineNumbers = document.getElementById('lineNumbers');
+  for (let i = 1; i <= lines; i++) {
+    lineNumbers.innerHTML += `<span>${i}</span>`;
+  }
+</script>
+
+<!-- Скопировать код -->
+<script>
+  function copyCode() {
+    const text = document.getElementById("codeBlock").innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Код скопирован в буфер обмена!");
+    });
+  }
+</script>
+
+</body>
+</html>

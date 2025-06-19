@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Гайды</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00979D;
+            --primary-dark: #00777D;
+            --secondary: #FF7D00;
+            --secondary-dark: #E56D00;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #e0e0e0;
+            --dark-gray: #95a5a6;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-img {
+            height: 50px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transition: var(--transition);
+        }
+        
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .main-nav {
+            display: flex;
+            gap: 15px;
+            margin-left: 30px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-link.active {
+            background: white;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .lang-switcher {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .lang-btn.active {
+            background: var(--white);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: var(--primary);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        /* Стили для гайдов */
+        .guides-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 2rem;
+        }
+        
+        .guide-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .guide-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .guide-image {
+            height: 200px;
+            background-color: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .guide-image img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .guide-card:hover .guide-image img {
+            transform: scale(1.1);
+        }
+        
+        .guide-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .guide-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .guide-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-weight: 700;
+            flex-grow: 1;
+        }
+        
+        .guide-description {
+            margin-bottom: 20px;
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .guide-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        .guide-link {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: var(--white);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: var(--transition);
+            text-align: center;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+        
+        .guide-link:hover {
+            background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 3rem;
+            background: var(--dark);
+            color: var(--white);
+            margin-top: 5rem;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+                padding: 1.5rem;
+            }
+            
+            .main-nav {
+                margin-left: 0;
+                margin-top: 15px;
+            }
+            
+            .guides-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Arduino_Logo.svg/2560px-Arduino_Logo.svg.png" alt="Arduino Logo" class="logo-img">
+            <div class="logo-text">
+                <span class="ru">Arduino Гайды</span>
+                <span class="en">Arduino Guides</span>
+            </div>
+        </div>
+        
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-box-open"></i>
+                <span class="ru">Каталог</span>
+                <span class="en">Catalog</span>
+            </a>
+            <a href="guides.html" class="nav-link active">
+                <i class="fas fa-book"></i>
+                <span class="ru">Гайды</span>
+                <span class="en">Guides</span>
+            </a>
+            <a href="projects.html" class="nav-link">
+                <i class="fas fa-project-diagram"></i>
+                <span class="ru">Проекты</span>
+                <span class="en">Projects</span>
+            </a>
+        </nav>
+        
+        <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="ru">Русский</button>
+            <button class="lang-btn" data-lang="en">English</button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <h1>
+            <span class="ru">Полезные гайды</span>
+            <span class="en">Useful Guides</span>
+        </h1>
+        
+        <div class="guides-container">
+            <div class="guide-card">
+                <div class="guide-image">
+                    <img src="https://lastminuteengineers.com/wp-content/uploads/arduino/DS18B20-Temperature-Sensor-Wiring-Diagram.png" alt="DS18B20">
+                    <div class="guide-badge ru">Температура</div>
+                    <div class="guide-badge en">Temperature</div>
+                    <div class="new-badge">NEW</div>
+                </div>
+                <div class="guide-content">
+                    <h3 class="guide-title ru">Подключение датчика DS18B20</h3>
+                    <h3 class="guide-title en">Connecting DS18B20 Sensor</h3>
+                    <p class="guide-description ru">Полное руководство по подключению цифрового датчика температуры DS18B20 к Arduino с примерами кода</p>
+                    <p class="guide-description en">Complete guide for connecting DS18B20 digital temperature sensor to Arduino with code examples</p>
+                    <div class="guide-meta">
+                        <span><i class="far fa-clock"></i> <span class="ru">25 мин</span><span class="en">25 min</span></span>
+                        <span><i class="fas fa-star"></i> 4.8</span>
+                    </div>
+                    <a href="guides/ds18b20.html" class="guide-link ru">Читать гайд →</a>
+                    <a href="guides/ds18b20.html" class="guide-link en">Read guide →</a>
+                </div>
+            </div>
+            
+            <div class="guide-card">
+                <div class="guide-image">
+                    <img src="https://lastminuteengineers.com/wp-content/uploads/arduino/OLED-Display-Arduino-Wiring-Diagram.png" alt="OLED Display">
+                    <div class="guide-badge ru">Дисплей</div>
+                    <div class="guide-badge en">Display</div>
+                </div>
+                <div class="guide-content">
+                    <h3 class="guide-title ru">Работа с OLED дисплеем</h3>
+                    <h3 class="guide-title en">Working with OLED Display</h3>
+                    <p class="guide-description ru">Настройка и использование OLED дисплея 0.96" с Arduino. Вывод текста и графики</p>
+                    <p class="guide-description en">Setup and use of 0.96" OLED display with Arduino. Text and graphics output</p>
+                    <div class="guide-meta">
+                        <span><i class="far fa-clock"></i> <span class="ru">20 мин</span><span class="en">20 min</span></span>
+                        <span><i class="fas fa-star"></i> 4.6</span>
+                    </div>
+                    <a href="guides/oled.html" class="guide-link ru">Читать гайд →</a>
+                    <a href="guides/oled.html" class="guide-link en">Read guide →</a>
+                </div>
+            </div>
+            
+            <div class="guide-card">
+                <div class="guide-image">
+                    <img src="https://lastminuteengineers.com/wp-content/uploads/arduino/RC522-RFID-Module-Arduino-Wiring-Diagram.png" alt="RFID Module">
+                    <div class="guide-badge ru">RFID</div>
+                    <div class="guide-badge en">RFID</div>
+                </div>
+                <div class="guide-content">
+                    <h3 class="guide-title ru">Использование RFID модуля</h3>
+                    <h3 class="guide-title en">Using RFID Module</h3>
+                    <p class="guide-description ru">Подключение и программирование RFID-RC522 для считывания меток и карт</p>
+                    <p class="guide-description en">Connecting and programming RFID-RC522 for reading tags and cards</p>
+                    <div class="guide-meta">
+                        <span><i class="far fa-clock"></i> <span class="ru">30 мин</span><span class="en">30 min</span></span>
+                        <span><i class="fas fa-star"></i> 4.7</span>
+                    </div>
+                    <a href="guides/rfid.html" class="guide-link ru">Читать гайд →</a>
+                    <a href="guides/rfid.html" class="guide-link en">Read guide →</a>
+                </div>
+            </div>
+            
+            <div class="guide-card">
+                <div class="guide-image">
+                    <img src="https://lastminuteengineers.com/wp-content/uploads/arduino/BME280-Sensor-Arduino-Wiring-Diagram.png" alt="BME280">
+                    <div class="guide-badge ru">Датчик</div>
+                    <div class="guide-badge en">Sensor</div>
+                    <div class="new-badge">NEW</div>
+                </div>
+                <div class="guide-content">
+                    <h3 class="guide-title ru">BME280: Температура, влажность, давление</h3>
+                    <h3 class="guide-title en">BME280: Temperature, Humidity, Pressure</h3>
+                    <p class="guide-description ru">Полное руководство по работе с датчиком BME280 и выводу данных на экран</p>
+                    <p class="guide-description en">Complete guide for BME280 sensor with data display</p>
+                    <div class="guide-meta">
+                        <span><i class="far fa-clock"></i> <span class="ru">35 мин</span><span class="en">35 min</span></span>
+                        <span><i class="fas fa-star"></i> 4.9</span>
+                    </div>
+                    <a href="guides/bme280.html" class="guide-link ru">Читать гайд →</a>
+                    <a href="guides/bme280.html" class="guide-link en">Read guide →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#" class="footer-link ru">О компании</a>
+                <a href="#" class="footer-link en">About</a>
+                <a href="#" class="footer-link ru">Контакты</a>
+                <a href="#" class="footer-link en">Contacts</a>
+                <a href="#" class="footer-link ru">Доставка</a>
+                <a href="#" class="footer-link en">Shipping</a>
+                <a href="#" class="footer-link ru">Гарантия</a>
+                <a href="#" class="footer-link en">Warranty</a>
+            </div>
+            <p class="copyright ru">© 2023 Arduino Гайды. Все права защищены.</p>
+            <p class="copyright en">© 2023 Arduino Guides. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Инициализация страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Скрываем английские элементы при загрузке
+            document.querySelectorAll('.en').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            setupLanguageSwitcher();
+        });
+        
+        // Переключение языка
+        function setupLanguageSwitcher() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Удаляем активный класс у всех кнопок
+                    langButtons.forEach(b => b.classList.remove('active'));
+                    // Добавляем активный класс текущей кнопке
+                    this.classList.add('active');
+                    
+                    const lang = this.dataset.lang;
+                    
+                    // Переключаем видимость элементов по языку
+                    document.querySelectorAll('.ru, .en').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    document.querySelectorAll(`.${lang}`).forEach(el => {
+                        el.style.display = 'block';
+                    });
+                });
+            });
+        }
+    </script>
+</body>
+</html>

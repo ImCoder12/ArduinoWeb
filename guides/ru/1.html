@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arduino Гайды - DS18B20</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -19,6 +19,16 @@
             --white: #ffffff;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
+            
+            /* Цвета для синтаксиса */
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+            --code-keyword: #c678dd;
+            --code-function: #61afef;
+            --code-string: #98c379;
+            --code-number: #d19a66;
+            --code-comment: #5c6370;
+            --code-include: #e06c75;
         }
         
         * {
@@ -85,6 +95,7 @@
         .guide-header h2 {
             color: var(--primary);
             margin-bottom: 10px;
+            font-size: 2rem;
         }
         
         .guide-meta {
@@ -95,11 +106,12 @@
         }
         
         .guide-difficulty {
-            background: #FF7D00;
+            background: var(--secondary);
             color: white;
             padding: 3px 10px;
             border-radius: 15px;
             font-size: 0.8rem;
+            font-weight: 500;
         }
         
         .guide-section {
@@ -109,7 +121,20 @@
         .guide-section h3 {
             color: var(--primary-dark);
             margin-bottom: 15px;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .guide-section h3:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: 70%;
+            width: 4px;
+            background: var(--secondary);
+            border-radius: 2px;
         }
         
         .components-list {
@@ -123,9 +148,16 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 12px;
+            padding: 10px 15px;
             background: #f8f9fa;
             border-radius: 8px;
+            transition: var(--transition);
+            border-left: 3px solid var(--secondary);
+        }
+        
+        .components-list li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .components-img {
@@ -137,6 +169,7 @@
             max-width: 100%;
             border-radius: 8px;
             box-shadow: var(--shadow);
+            border: 1px solid #eee;
         }
         
         .wiring-diagram {
@@ -154,6 +187,13 @@
             border: 1px solid #eee;
             padding: 15px;
             background: white;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        
+        .wiring-diagram img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
         }
         
         .wiring-steps {
@@ -162,50 +202,67 @@
             background: #f9f9f9;
             padding: 20px;
             border-radius: 8px;
+            border-left: 4px solid var(--primary);
         }
         
         .wiring-steps p {
             margin-bottom: 10px;
             padding-left: 25px;
             position: relative;
+            line-height: 1.7;
         }
         
         .wiring-steps p:before {
-            content: "•";
+            content: "→";
             color: var(--secondary);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             position: absolute;
             left: 5px;
-            top: -5px;
+            top: 0;
         }
         
         .code-section {
             background: #f5f7fa;
-            padding: 20px;
+            padding: 25px;
             border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
         
         .tabs {
             display: flex;
             gap: 5px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .tab-btn {
             background: #e0e0e0;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px 5px 0 0;
+            padding: 10px 20px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .tab-btn:hover {
+            background: #d0d0d0;
         }
         
         .tab-btn.active {
             background: var(--primary);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,151,157,0.3);
         }
         
         .tab-content {
             display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .tab-content.active {
@@ -213,26 +270,50 @@
         }
         
         pre {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 5px;
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 20px;
+            border-radius: 8px;
             overflow-x: auto;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+            border-left: 4px solid var(--secondary);
         }
         
         code {
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
+            font-family: 'Source Code Pro', monospace;
         }
+        
+        /* Подсветка синтаксиса */
+        .token.include { color: var(--code-include); }
+        .token.keyword { color: var(--code-keyword); font-weight: 500; }
+        .token.function { color: var(--code-function); }
+        .token.string { color: var(--code-string); }
+        .token.number { color: var(--code-number); }
+        .token.comment { color: var(--code-comment); font-style: italic; }
+        .token.operator { color: var(--code-text); }
+        .token.punctuation { color: var(--code-text); }
         
         .troubleshooting {
             background: #fff8f0;
-            padding: 20px;
+            padding: 25px;
             border-radius: 8px;
+            border: 1px solid #ffe0b2;
+        }
+        
+        .accordion {
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         .accordion-item {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .accordion-btn {
@@ -241,17 +322,24 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
+            padding: 15px 20px;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .accordion-btn:hover {
+            background: var(--primary-dark);
         }
         
         .accordion-btn:after {
             content: "+";
             font-size: 1.2rem;
+            transition: var(--transition);
         }
         
         .accordion-btn.active:after {
@@ -264,12 +352,24 @@
             overflow: hidden;
             transition: max-height 0.3s ease;
             background: white;
-            border-radius: 0 0 5px 5px;
+        }
+        
+        .accordion-content p {
+            margin: 10px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .accordion-content p:before {
+            content: "•";
+            color: var(--secondary);
+            position: absolute;
+            left: 0;
         }
         
         .accordion-item.active .accordion-content {
-            padding: 20px;
-            max-height: 200px;
+            padding: 15px 20px;
+            max-height: 500px;
         }
         
         .guide-footer {
@@ -292,6 +392,7 @@
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid var(--primary);
         }
         
         .guide-actions {
@@ -302,17 +403,24 @@
         .like-btn, .save-btn {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
             background: #f0f0f0;
             border: none;
-            padding: 8px 15px;
+            padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
             transition: var(--transition);
+            font-weight: 500;
         }
         
-        .like-btn:hover, .save-btn:hover {
-            background: #e0e0e0;
+        .like-btn:hover {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .save-btn:hover {
+            background: #e8f5e9;
+            color: #388e3c;
         }
         
         footer {
@@ -335,6 +443,12 @@
             header {
                 flex-direction: column;
                 gap: 15px;
+                text-align: center;
+            }
+            
+            .guide-footer {
+                flex-direction: column;
+                gap: 15px;
             }
         }
     </style>
@@ -354,6 +468,7 @@
                 <div class="guide-meta">
                     <span class="guide-difficulty">Средний уровень</span>
                     <span class="guide-time"><i class="far fa-clock"></i> 5 мин</span>
+                    <span class="guide-views"><i class="far fa-eye"></i> 1.2K</span>
                 </div>
             </div>
 
@@ -394,41 +509,54 @@
                     
                     <div class="tab-content active" id="install">
                         <p>Установите библиотеку <strong>DallasTemperature</strong> через менеджер библиотек Arduino IDE:</p>
-                        <pre><code>
-1. Откройте Arduino IDE
-2. Скетч → Подключить библиотеку → Управлять библиотеками...
-3. Найдите "DallasTemperature"
-4. Установите последнюю версию
-                        </code></pre>
+                          <pre><code class="language-arduino">
+// 1. Откройте Arduino IDE
+// 2. Скетч → Подключить библиотеку → Управлять библиотеками...
+// 3. Найдите "DallasTemperature"
+// 4. Установите последнюю версию
+                          </code></pre>
                     </div>
                     
                     <div class="tab-content" id="code">
-                        <pre><code>
-#include &lt;OneWire.h&gt;
-#include &lt;DallasTemperature.h&gt;
+                      <pre><code class="language-arduino">
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 #define ONE_WIRE_BUS 2
 
+// Создаем экземпляр OneWire
 OneWire oneWire(ONE_WIRE_BUS);
+
+// Передаем ссылку на OneWire Dallas Temperature
 DallasTemperature sensors(&oneWire);
 
 void setup() {
+  // Инициализация последовательного порта
   Serial.begin(9600);
+
+  // Инициализация датчиков
   sensors.begin();
+
+  Serial.println("Датчик температуры DS18B20 инициализирован");
 }
 
 void loop() {
+  // Запрос температуры
   sensors.requestTemperatures();
+
+  // Получаем температуру в °C (индекс 0 - первый датчик)
   float tempC = sensors.getTempCByIndex(0);
-  
+
+  // Выводим температуру в Serial Monitor
   Serial.print("Температура: ");
   Serial.print(tempC);
   Serial.println(" °C");
-  
+
+  // Задержка между измерениями
   delay(1000);
 }
-                        </code></pre>
-                    </div>
+                    </code></pre>
+                  </div>
                 </div>
 
                 <div class="guide-section troubleshooting">
@@ -439,6 +567,7 @@ void loop() {
                             <div class="accordion-content">
                                 <p>Проверьте правильность подключения резистора и целостность соединений. Убедитесь, что выбран правильный пин в коде.</p>
                                 <p>Попробуйте другой датчик, чтобы исключить его неисправность.</p>
+                                <p>Проверьте, подключена ли библиотека DallasTemperature.</p>
                             </div>
                         </div>
                         <div class="accordion-item">
@@ -446,6 +575,7 @@ void loop() {
                             <div class="accordion-content">
                                 <p>Обычно означает обрыв соединения. Проверьте пайку и контакты датчика.</p>
                                 <p>Убедитесь, что подтягивающий резистор подключен правильно.</p>
+                                <p>Проверьте питание датчика (должно быть 5V).</p>
                             </div>
                         </div>
                         <div class="accordion-item">
@@ -453,6 +583,7 @@ void loop() {
                             <div class="accordion-content">
                                 <p>Проверьте питание датчика - должно быть стабильные 5V.</p>
                                 <p>Убедитесь, что датчик не находится рядом с источниками тепла.</p>
+                                <p>Попробуйте откалибровать датчик, сравнив с другим термометром.</p>
                             </div>
                         </div>
                     </div>
@@ -461,11 +592,14 @@ void loop() {
                 <div class="guide-footer">
                     <div class="guide-author">
                         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Автор">
-                        <span>Автор: Олег Узлов</span>
+                        <div>
+                            <div>Автор: Олег Узлов</div>
+                            <small>Инженер-электронщик, 5 лет опыта</small>
+                        </div>
                     </div>
                     <div class="guide-actions">
-                        <button class="like-btn"><i class="far fa-thumbs-up"></i> Полезно</button>
-                        <button class="save-btn"><i class="far fa-bookmark"></i> Сохранить</button>
+                        <button class="like-btn"><i class="far fa-thumbs-up"></i> <span>Полезно</span></button>
+                        <button class="save-btn"><i class="far fa-bookmark"></i> <span>Сохранить</span></button>
                     </div>
                 </div>
             </div>
@@ -496,26 +630,69 @@ void loop() {
         // Аккордеон для решения проблем
         document.querySelectorAll('.accordion-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                this.classList.toggle('active');
-                this.closest('.accordion-item').classList.toggle('active');
+                const item = this.closest('.accordion-item');
+                const isActive = item.classList.contains('active');
+                
+                // Закрываем все элементы
+                document.querySelectorAll('.accordion-item').forEach(el => {
+                    el.classList.remove('active');
+                });
+                
+                // Открываем текущий, если он был закрыт
+                if (!isActive) {
+                    item.classList.add('active');
+                }
             });
         });
 
         // Кнопка "Полезно"
         document.querySelector('.like-btn').addEventListener('click', function() {
-            this.innerHTML = '<i class="fas fa-thumbs-up"></i> Спасибо!';
-            this.style.background = '#e1f5fe';
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            
+            if (this.classList.contains('liked')) return;
+            
+            this.classList.add('liked');
+            icon.className = 'fas fa-thumbs-up';
+            text.textContent = 'Спасибо!';
+            this.style.background = '#e3f2fd';
+            this.style.color = '#1976d2';
+            
+            // Анимация
+            this.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 200);
         });
 
         // Кнопка "Сохранить"
         document.querySelector('.save-btn').addEventListener('click', function() {
-            this.innerHTML = '<i class="fas fa-bookmark"></i> Сохранено!';
-            this.style.background = '#e8f5e9';
-            setTimeout(() => {
-                this.innerHTML = '<i class="far fa-bookmark"></i> Сохранить';
+            const icon = this.querySelector('i');
+            const text = this.querySelector('span');
+            
+            if (this.classList.contains('saved')) {
+                this.classList.remove('saved');
+                icon.className = 'far fa-bookmark';
+                text.textContent = 'Сохранить';
                 this.style.background = '#f0f0f0';
-            }, 2000);
+                this.style.color = '';
+                return;
+            }
+            
+            this.classList.add('saved');
+            icon.className = 'fas fa-bookmark';
+            text.textContent = 'Сохранено!';
+            this.style.background = '#e8f5e9';
+            this.style.color = '#388e3c';
+            
+            // Анимация
+            this.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 200);
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-cpp.min.js"></script>
 </body>
 </html>
