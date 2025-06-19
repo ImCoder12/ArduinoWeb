@@ -221,13 +221,6 @@
             left: 5px;
             top: 0;
         }
-        
-        .code-section {
-            background: #f5f7fa;
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
 
         .code-wrapper {
             position: relative;
@@ -236,6 +229,9 @@
             box-shadow: 0 0 10px #0006;
             border-radius: 8px;
             overflow: hidden;
+            background: #0006;
+            padding: 25px;
+            border: 1px solid #0006;
         }
 
         .line-numbers {
@@ -551,7 +547,7 @@
                     
                     <div class="tab-content active" id="install">
                         <p>Установите библиотеку <strong>DallasTemperature</strong> через менеджер библиотек Arduino IDE:</p>
-                          <pre><code class="language-arduino">
+                          <pre><code class="language-cpp">
 // 1. Откройте Arduino IDE
 // 2. Скетч → Подключить библиотеку → Управлять библиотеками...
 // 3. Найдите "DallasTemperature"
@@ -559,12 +555,11 @@
                           </code></pre>
                     </div>
                     
-                    <div class="code-wrapper">
-                        <div class="line-numbers" id="lineNumbers"></div>
-                        <pre><code class="language-cpp" id="codeBlock">
+                    <div class="tab-content" id="code">
+                        <pre><code class="language-cpp">
 // Подключаем библиотеки
-#include <OneWire.h>
-#include <DallasTemperature.h>
+#include OneWire.h
+#include DallasTemperature.h
 
 #define ONE_WIRE_BUS 2
 
@@ -625,7 +620,6 @@ void loop() {
                         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Автор">
                         <div>
                             <div>Автор: Олег Узлов</div>
-                            <small>Инженер-электронщик, 5 лет опыта</small>
                         </div>
                     </div>
                     <div class="guide-actions">
